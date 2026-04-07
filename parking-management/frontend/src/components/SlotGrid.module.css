@@ -1,0 +1,149 @@
+/* SlotGrid.module.css – styles for parking slot grid and individual slot cards */
+
+.section {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+
+/* ── Grid ─────────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: 10px;
+}
+
+/* ── Slot card ────────────────────────────────────────────────── */
+.slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  min-height: 80px;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  user-select: none;
+}
+
+/* ── States ───────────────────────────────────────────────────── */
+.free {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border-color: var(--success);
+}
+
+.occupied {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-color: var(--danger);
+  opacity: 0.85;
+}
+
+/* Clickable free slot hover */
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.28);
+  border-color: var(--success);
+}
+
+.clickable:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Selected slot highlight */
+.selected {
+  border-color: var(--primary) !important;
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%) !important;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.25), 0 8px 20px rgba(99,102,241,0.2) !important;
+  transform: translateY(-3px) scale(1.05) !important;
+}
+
+.selectedRing {
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  border: 2px solid var(--primary);
+  animation: ringPulse 1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.04); }
+}
+
+/* ── Slot content ─────────────────────────────────────────────── */
+.slotId {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.slotStatus {
+  font-size: 22px;
+  margin: 3px 0 2px;
+  line-height: 1;
+}
+
+.vehicleNo {
+  font-size: 0.52rem;
+  font-weight: 700;
+  color: var(--danger);
+  text-align: center;
+  word-break: break-all;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.freeLabel {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--success);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ── Legend ───────────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.legendFree { color: var(--success); display: flex; align-items: center; gap: 5px; }
+.legendOcc  { color: var(--danger);  display: flex; align-items: center; gap: 5px; }
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legendHint {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  margin-left: auto;
+}

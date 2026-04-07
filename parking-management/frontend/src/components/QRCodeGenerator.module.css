@@ -1,0 +1,108 @@
+/* QRCodeGenerator.module.css – styles for the QR code display */
+
+/* ── Wrapper ─────────────────────────────────────────────────── */
+.qrWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: qrReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes qrReveal {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Decorative ring around QR ───────────────────────────────── */
+.qrRing {
+  position: relative;
+  padding: 6px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--primary), #a78bfa, var(--primary-dark));
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.1),
+    0 8px 32px rgba(99, 102, 241, 0.25);
+  animation: ringGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes ringGlow {
+  from { box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 8px 32px rgba(99, 102, 241, 0.2); }
+  to   { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.15), 0 12px 40px rgba(99, 102, 241, 0.35); }
+}
+
+/* ── QR canvas container ─────────────────────────────────────── */
+.qrCanvas {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Scan hint ───────────────────────────────────────────────── */
+.scanHint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.scanIcon {
+  font-size: 1rem;
+  animation: phoneBounce 2s ease-in-out infinite;
+}
+
+@keyframes phoneBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* ── Action buttons row ──────────────────────────────────────── */
+.qrActions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.btnDownload,
+.btnPrint {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.btnDownload {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+}
+.btnDownload:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+}
+
+.btnPrint {
+  background: var(--bg-base);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
+}
+.btnPrint:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
