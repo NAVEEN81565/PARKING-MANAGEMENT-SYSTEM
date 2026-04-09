@@ -6,7 +6,7 @@ import styles from '../styles/shared.module.css';
 
 export default function EmployeeMgmt() {
   const { employees, addEmployee, deleteEmployee } = useApp();
-  const [form, setForm]       = useState({ name: '', email: '' });
+  const [form, setForm]       = useState({ name: '', email: '', password: 'emp123' });
   const [search, setSearch]   = useState('');
   const [alert, setAlert]     = useState(null);
 
@@ -15,21 +15,25 @@ export default function EmployeeMgmt() {
     setTimeout(() => setAlert(null), 4000);
   };
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email) return;
-    const result = addEmployee(form.name.trim(), form.email.trim().toLowerCase());
+    if (form.password.length < 6) {
+      showAlert('error', 'Password must be at least 6 characters.');
+      return;
+    }
+    const result = await addEmployee(form.name.trim(), form.email.trim().toLowerCase(), form.password);
     if (result.success) {
-      showAlert('success', `Employee "${form.name}" added successfully.`);
-      setForm({ name: '', email: '' });
+      showAlert('success', `Employee "${form.name}" added. They can log in with their email and the password you set.`);
+      setForm({ name: '', email: '', password: 'emp123' });
     } else {
       showAlert('error', result.message);
     }
   };
 
-  const handleDelete = (id, name) => {
+  const handleDelete = async (id, name) => {
     if (!window.confirm(`Remove employee "${name}"?`)) return;
-    deleteEmployee(id);
+    await deleteEmployee(id);
     showAlert('success', `Employee "${name}" removed.`);
   };
 
@@ -72,6 +76,17 @@ export default function EmployeeMgmt() {
                 placeholder="employee@parksys.com"
                 value={form.email}
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Initial Password</label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="min 6 characters"
+                value={form.password}
+                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                 required
               />
             </div>

@@ -31,8 +31,8 @@ export default function ParkingSlots() {
    * Now receives scheduledExitTime as the 4th parameter
    * (BookingModal calculates it from the duration the user selected)
    */
-  const handleConfirm = (slotId, vehicleNo, vehicleType, scheduledExitTime, phone) => {
-    const result = assignSlotById(slotId, vehicleNo, vehicleType, scheduledExitTime, phone);
+  const handleConfirm = async (slotId, vehicleNo, vehicleType, scheduledExitTime, phone) => {
+    const result = await assignSlotById(slotId, vehicleNo, vehicleType, scheduledExitTime, phone);
     if (result.success) {
       setSelectedSlot(null);
 
@@ -48,13 +48,15 @@ export default function ParkingSlots() {
         exitTime:      null,
       };
 
-      // Store in localStorage for QR persistence
+      // Store in localStorage for QR persistence locally for the generator
       const storedBookings = JSON.parse(localStorage.getItem('pms_bookings') || '[]');
       storedBookings.push(bookingData);
       localStorage.setItem('pms_bookings', JSON.stringify(storedBookings));
 
       setConfirmedBooking(bookingData);
       showToast(`✅ Slot ${result.slotId} booked for ${vehicleNo}!`, 'success');
+    } else {
+      showToast(`❌ Failed: ${result.message}`, 'error');
     }
     return result;
   };

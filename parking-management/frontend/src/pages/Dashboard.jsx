@@ -27,9 +27,9 @@ export default function Dashboard() {
     return d.toDateString() === today.toDateString();
   });
 
-  const handleRelease = (vehicleNo) => {
+  const handleRelease = async (vehicleNo) => {
     if (!window.confirm(`Release vehicle ${vehicleNo}?`)) return;
-    const result = freeSlot(vehicleNo);
+    const result = await freeSlot(vehicleNo);
     if (result.success && result.fineAmount > 0) {
       alert(`Vehicle released. Fine: ₹${result.fineAmount}`);
     }

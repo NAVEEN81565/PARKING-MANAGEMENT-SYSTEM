@@ -14,9 +14,9 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [error,    setError]    = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = login(email.trim(), password);
+    const result = await login(email.trim(), password);
     if (result.success) {
       if (result.role !== 'admin') {
         setError('This login is for administrators only. Please use the Employee login.');

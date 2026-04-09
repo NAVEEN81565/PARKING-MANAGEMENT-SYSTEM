@@ -1,23 +1,30 @@
 /* Register Page */
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../services/AppContext';
 import Alert from '../components/Alert';
 import styles from './Auth.module.css';
 
 export default function Register() {
   const { register } = useApp();
+  const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'employee' });
   const [error, setError] = useState('');
 
   const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.password)
       return setError('Please fill all fields');
-    const result = register(form.name, form.email, form.password, form.role);
-    if (!result.success) setError(result.message);
+    if (form.password.length < 6)
+      return setError('Password must be at least 6 characters');
+    const result = await register(form.name, form.email, form.password);
+    if (result.success) {
+      navigate('/employee/dashboard');
+    } else {
+      setError(result.message);
+    }
   };
 
   return (

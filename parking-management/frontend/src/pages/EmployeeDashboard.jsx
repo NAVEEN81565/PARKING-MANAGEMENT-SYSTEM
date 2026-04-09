@@ -37,9 +37,9 @@ export default function EmployeeDashboard() {
     .filter(h => h.exitTime && h.fineAmount > 0)
     .reduce((sum, h) => sum + h.fineAmount, 0);
 
-  const handleRelease = (vehicleNo) => {
+  const handleRelease = async (vehicleNo) => {
     if (!window.confirm(`Release vehicle ${vehicleNo}? Fine will be calculated if overdue.`)) return;
-    const result = freeSlot(vehicleNo);
+    const result = await freeSlot(vehicleNo);
     if (result.success && result.fineAmount > 0) {
       alert(`Vehicle released from Slot ${result.slotId}.\nFine charged: ₹${result.fineAmount} (${Math.ceil(result.fineAmount / FINE_RATE_PER_HOUR)} hour(s) overtime)`);
     }

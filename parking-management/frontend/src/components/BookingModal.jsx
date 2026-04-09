@@ -70,7 +70,7 @@ export default function BookingModal({ slot, onConfirm, onClose }) {
     setLoading(true);
     await new Promise(r => setTimeout(r, 350)); // UX delay
     const scheduledExitTime = getScheduledExitTime();
-    const result = onConfirm(slot.id, trimmed, slot.type, scheduledExitTime, phone.trim());
+    const result = await onConfirm(slot.id, trimmed, slot.type, scheduledExitTime, phone.trim());
     setLoading(false);
 
     if (!result.success) {

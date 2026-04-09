@@ -69,32 +69,41 @@ export default function ProfileModal({ isOpen, onClose }) {
     setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.email.trim()) {
       setError('Name and Email are required.');
       return;
     }
 
-    // Pass data without overwriting password if it's empty (simulation)
-    const updatePayload = {
+    const updatePayload = new FormData();
+    updatePayload.append('name', formData.name);
+    updatePayload.append('email', formData.email);
+    if (formData.phone) updatePayload.append('phone', formData.phone);
+    if (formData.password) updatePayload.append('password', formData.password);
+    
+    // If the avatar is base64 string and it's new, we could append it. 
+    // Actually our apiFetch supports sending JSON.
+    // So let's stick to JSON for easier integration or pass it directly.
+    const payload = {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      avatar: formData.avatar
     };
-    if (formData.password) {
-      updatePayload.password = formData.password;
+    if (formData.password) payload.password = formData.password;
+    if (formData.avatar && formData.avatar.startsWith('data:')) {
+       // Just pass it along; DRF base64 image encoders can handle data uris
+       payload.avatar = formData.avatar;
     }
 
-    const result = updateProfile(updatePayload);
+    const result = await updateProfile(payload);
     if (result.success) {
       setMessage('Profile updated successfully!');
       setTimeout(() => {
         onClose();
       }, 1500);
     } else {
-      setError('Failed to update profile.');
+      setError(result.message || 'Failed to update profile.');
     }
   };
 
