@@ -50,7 +50,7 @@ class ParkingSlot(models.Model):
         ordering = ['slot_id']
 
     def __str__(self):
-        status = '🔴 Occupied' if self.is_occupied else '🟢 Free'
+        status = 'Occupied' if self.is_occupied else 'Free'
         return f"{self.slot_id} ({self.slot_type}) — {status}"
 
 
@@ -193,4 +193,4 @@ class Fine(models.Model):
 
     def __str__(self):
         paid = 'PAID' if self.is_paid else 'UNPAID'
-        return f"Fine #{self.pk} | ₹{self.amount} | {paid}"
+        return f"Fine #{self.pk} | Rs.{self.amount} | {paid}"

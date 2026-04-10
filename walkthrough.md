@@ -1,5 +1,8 @@
 # Backend Implementation Complete!
 
+> [!TIP]
+> **Recent Fix**: We resolved the "500 Internal Server Error" appearing in the Django Admin portal (`/admin/parking/parkingslot/add/`). This was caused by an incompatibility between Python 3.14.3 and Django 5.0.6 involving internal template context processing. The Django version has been successfully upgraded to **6.0.4** to fully support Python 3.14, and the backend dev server is back online!
+
 I have built the entire Django backend precisely matching your React frontend's requirements. 
 
 ## What Was Built:

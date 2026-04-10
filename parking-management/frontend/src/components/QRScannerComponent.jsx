@@ -43,14 +43,7 @@ export default function QRScannerComponent({ onScanSuccess, onScanError }) {
   return (
     <div 
       id="qr-reader" 
-      style={{
-        width: '100%', 
-        maxWidth: '500px', 
-        background: 'var(--bg-card)', 
-        borderRadius: '12px',
-        overflow: 'hidden',
-        border: '1px solid var(--border)'
-      }} 
+      className="w-full max-w-[500px] bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm [&_video]:rounded-lg [&_button]:mt-4 [&_button]:px-4 [&_button]:py-2 [&_button]:bg-blue-600 [&_button]:text-white [&_button]:font-semibold [&_button]:rounded-lg hover:[&_button]:bg-blue-700" 
     />
   );
 }

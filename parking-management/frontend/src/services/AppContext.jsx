@@ -160,8 +160,10 @@ export const AppProvider = ({ children }) => {
         role: data.user.role || 'employee',
         profile_photo: data.user.profile_photo,
       };
-      // fallback
-      if (userData.email === 'admin@parksys.com' || data.user.is_superuser) userData.role = 'admin';
+      // Promote to admin if backend says so
+      if (data.user.role === 'admin' || data.user.is_superuser || data.user.is_staff) {
+        userData.role = 'admin';
+      }
 
       setUser(userData);
       localStorage.setItem('pms_user', JSON.stringify(userData));

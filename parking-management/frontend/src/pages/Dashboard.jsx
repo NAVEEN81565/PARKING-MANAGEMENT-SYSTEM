@@ -1,17 +1,22 @@
-/* Admin Dashboard – Enhanced with expiry tracking, fines, and real-time clock
- *
- * Shows:
- * - Real-time clock
- * - Car/Bike parking stats
- * - Expired bookings count + total fines (pending + collected)
- * - Recent activity table with expiry status and fine amounts
- */
+/* Admin Dashboard – Teal themes */
+import {
+  ParkingSquare, CheckCircle2, Car, Bike, Users, ClipboardList,
+  CalendarCheck, Timer, Banknote, BadgeCheck, AlertCircle,
+} from 'lucide-react';
 import { useApp } from '../services/AppContext';
 import StatCard from '../components/StatCard';
 import ClockComponent from '../components/ClockComponent';
 import AlertBanner from '../components/AlertBanner';
 import BookingTable from '../components/BookingTable';
-import styles from '../styles/shared.module.css';
+
+function SectionLabel({ children }) {
+  return (
+    <div className="flex items-center gap-3 mt-8 mb-4">
+      <span style={{ fontFamily: 'Poppins, sans-serif' }} className="text-xs font-bold uppercase tracking-[0.15em] text-teal-600">{children}</span>
+      <div className="flex-1 h-px bg-teal-100" />
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const {
@@ -21,96 +26,97 @@ export default function Dashboard() {
     FINE_RATE_PER_HOUR,
   } = useApp();
 
-  const todayHistory = history.filter(h => {
-    const d = new Date(h.entryTime);
-    const today = new Date();
-    return d.toDateString() === today.toDateString();
-  });
+  const todayHistory = history.filter(h => new Date(h.entryTime).toDateString() === new Date().toDateString());
 
   const handleRelease = async (vehicleNo) => {
     if (!window.confirm(`Release vehicle ${vehicleNo}?`)) return;
     const result = await freeSlot(vehicleNo);
-    if (result.success && result.fineAmount > 0) {
-      alert(`Vehicle released. Fine: ₹${result.fineAmount}`);
-    }
+    if (result.success && result.fineAmount > 0) alert(`Vehicle released. Fine: ₹${result.fineAmount}`);
   };
 
   return (
-    <div>
-      {/* ── Page Header with Clock ────────────────────────── */}
-      <div className={styles.pageHeader}>
+    <div className="flex flex-col gap-2 max-w-7xl mx-auto">
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
         <div>
-          <h1 className={styles.pageTitle}>Admin Dashboard</h1>
-          <p className={styles.pageSubtitle}>Live overview of parking operations & financials</p>
+          <h1 style={{ fontFamily: 'Poppins, sans-serif' }} className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight mb-1">
+            Admin Dashboard
+          </h1>
+          <p className="text-slate-500 text-sm">Live overview of parking operations & financials</p>
         </div>
-        <ClockComponent />
+        <div className="hidden sm:block"><ClockComponent /></div>
       </div>
 
-      {/* ── Expiry Alerts ─────────────────────────────────── */}
-      {expiredBookings.length > 0 && (
-        <AlertBanner type="danger" dismissible={false}>
-          🚨 <strong>{expiredBookings.length} vehicle(s) have exceeded their exit time!</strong>{' '}
-          Total pending fines: ₹{totalPendingFines} (₹{FINE_RATE_PER_HOUR}/hr)
-        </AlertBanner>
-      )}
-      {expiringBookings.length > 0 && (
-        <AlertBanner type="warning">
-          ⚠️ <strong>{expiringBookings.length} booking(s) expiring within 30 minutes.</strong>
-        </AlertBanner>
-      )}
-
-      {/* ── Car Parking Stats ─────────────────────────────── */}
-      <p style={{ fontWeight: 700, marginBottom: 10, color: 'var(--text-secondary)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🚗 Car Parking</p>
-      <div className={styles.statsGrid}>
-        <StatCard icon="🅿️" label="Total Car Slots"     value={stats.totalCar}     accent="primary" />
-        <StatCard icon="✅" label="Available"            value={stats.availableCar} accent="success" />
-        <StatCard icon="🚗" label="Occupied"             value={stats.occupiedCar}  accent="danger"  />
+      {/* Alerts */}
+      <div className="space-y-3 mb-2">
+        {expiredBookings.length > 0 && (
+          <AlertBanner type="danger" dismissible={false}>
+            <strong>{expiredBookings.length} vehicle(s) exceeded exit time!</strong>{' '}
+            Pending fines: ₹{totalPendingFines} <span className="opacity-70 text-xs">(₹{FINE_RATE_PER_HOUR}/hr)</span>
+          </AlertBanner>
+        )}
+        {expiringBookings.length > 0 && (
+          <AlertBanner type="warning">
+            <strong>{expiringBookings.length} booking(s) expiring within 30 minutes.</strong>
+          </AlertBanner>
+        )}
       </div>
 
-      {/* ── Bike Parking Stats ────────────────────────────── */}
-      <p style={{ fontWeight: 700, marginBottom: 10, marginTop: 8, color: 'var(--text-secondary)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🏍️ Bike Parking</p>
-      <div className={styles.statsGrid}>
-        <StatCard icon="🅿️" label="Total Bike Slots"    value={stats.totalBike}     accent="primary" />
-        <StatCard icon="✅" label="Available"            value={stats.availableBike} accent="success" />
-        <StatCard icon="🏍️" label="Occupied"            value={stats.occupiedBike}  accent="danger"  />
+      {/* Car Stats */}
+      <SectionLabel>Car Parking</SectionLabel>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard icon={ParkingSquare} label="Total Car Slots"  value={stats.totalCar}     accent="primary" />
+        <StatCard icon={CheckCircle2}  label="Available"        value={stats.availableCar} accent="success" />
+        <StatCard icon={Car}           label="Occupied"         value={stats.occupiedCar}  accent="danger"  />
       </div>
 
-      {/* ── Operations & Finance Stats ────────────────────── */}
-      <p style={{ fontWeight: 700, marginBottom: 10, marginTop: 8, color: 'var(--text-secondary)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📊 Operations & Finance</p>
-      <div className={styles.statsGrid}>
-        <StatCard icon="👥" label="Employees"            value={employees.length}       accent="primary" />
-        <StatCard icon="📋" label="Total Records"        value={history.length}         accent="primary" />
-        <StatCard icon="📅" label="Today's Activity"     value={todayHistory.length}     accent="success" subtitle="vehicles today" />
-        <StatCard icon="⏰" label="Expired Bookings"     value={expiredBookings.length}  accent="danger" />
-        <StatCard icon="💰" label="Pending Fines"        value={`₹${totalPendingFines}`} accent={totalPendingFines > 0 ? 'danger' : 'success'} />
-        <StatCard icon="✅" label="Collected Fines"      value={`₹${totalCollectedFines}`} accent="warning" />
+      {/* Bike Stats */}
+      <SectionLabel>Bike Parking</SectionLabel>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard icon={ParkingSquare} label="Total Bike Slots" value={stats.totalBike}     accent="primary" />
+        <StatCard icon={CheckCircle2}  label="Available"        value={stats.availableBike} accent="success" />
+        <StatCard icon={Bike}          label="Occupied"         value={stats.occupiedBike}  accent="danger"  />
       </div>
 
-      {/* ── Active Bookings with Expiry Info ──────────────── */}
+      {/* Operations */}
+      <SectionLabel>Operations & Finance</SectionLabel>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <StatCard icon={Users}         label="Employees"       value={employees.length}          accent="primary" />
+        <StatCard icon={ClipboardList} label="Total Records"   value={history.length}            accent="primary" />
+        <StatCard icon={CalendarCheck} label="Today"           value={todayHistory.length}       accent="success" subtitle="vehicles" />
+        <StatCard icon={AlertCircle}   label="Expired"         value={expiredBookings.length}    accent="danger"  />
+        <StatCard icon={Banknote}      label="Pending Fines"   value={`₹${totalPendingFines}`}  accent={totalPendingFines > 0 ? 'danger' : 'success'} />
+        <StatCard icon={BadgeCheck}    label="Collected Fines" value={`₹${totalCollectedFines}`} accent="warning" />
+      </div>
+
+      {/* Active Bookings */}
       {activeBookings.length > 0 && (
-        <div className={styles.card} style={{ marginBottom: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <h3 style={{ fontWeight: 700 }}>⏱ Active Bookings ({activeBookings.length})</h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-teal-100 mt-6 overflow-hidden">
+          <div className="flex justify-between items-center px-5 py-4 border-b border-teal-50">
+            <h3 style={{ fontFamily: 'Poppins, sans-serif' }} className="font-bold text-slate-800 flex items-center gap-2">
+              <span className="p-1.5 bg-teal-100 text-teal-600 rounded-lg"><Timer size={16} /></span>
+              Active Bookings
+              <span className="text-sm font-medium text-slate-400">({activeBookings.length})</span>
+            </h3>
           </div>
-          <BookingTable
-            bookings={activeBookings}
-            showEmployee={true}
-            showFine={true}
-            showActions={true}
-            onRelease={handleRelease}
-          />
+          <div className="overflow-x-auto">
+            <BookingTable bookings={activeBookings} showEmployee showFine showActions onRelease={handleRelease} />
+          </div>
         </div>
       )}
 
-      {/* ── Recent Activity ───────────────────────────────── */}
-      <div className={styles.card}>
-        <h3 style={{ fontWeight: 700, marginBottom: 14 }}>📋 Recent Parking Activity</h3>
-        <BookingTable
-          bookings={history}
-          showEmployee={true}
-          showFine={true}
-          maxRows={10}
-        />
+      {/* Recent Activity */}
+      <div className="bg-white rounded-2xl shadow-sm border border-teal-100 mt-6 mb-8 overflow-hidden">
+        <div className="px-5 py-4 border-b border-teal-50">
+          <h3 style={{ fontFamily: 'Poppins, sans-serif' }} className="font-bold text-slate-800 flex items-center gap-2">
+            <span className="p-1.5 bg-slate-100 text-slate-500 rounded-lg"><ClipboardList size={16} /></span>
+            Recent Parking Activity
+          </h3>
+        </div>
+        <div className="overflow-x-auto">
+          <BookingTable bookings={history} showEmployee showFine maxRows={10} />
+        </div>
       </div>
     </div>
   );

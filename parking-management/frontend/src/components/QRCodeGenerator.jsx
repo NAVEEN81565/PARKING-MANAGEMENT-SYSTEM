@@ -1,11 +1,10 @@
-/* QRCodeGenerator – reusable QR code renderer with download/print support */
+/* QRCodeGenerator – reusable QR code renderer with download/print support (Tailwind CSS Redesign) */
 import { useRef, useCallback } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import styles from './QRCodeGenerator.module.css';
+import { Smartphone, Download, Printer } from 'lucide-react';
 
 /**
  * @param {{ bookingData: object }} props
- * bookingData shape: { employeeId, employeeName, employeePhone, vehicleNo, vehicleType, slotId, entryTime, exitTime }
  */
 export default function QRCodeGenerator({ bookingData }) {
   const qrRef = useRef(null);
@@ -29,7 +28,6 @@ export default function QRCodeGenerator({ bookingData }) {
     const canvas = qrRef.current?.querySelector('canvas');
     if (!canvas) return;
 
-    // Create a richer image: QR + label
     const size = 300;
     const padding = 40;
     const labelHeight = 50;
@@ -92,16 +90,16 @@ export default function QRCodeGenerator({ bookingData }) {
   }, [bookingData]);
 
   return (
-    <div className={styles.qrWrapper}>
+    <div className="flex flex-col items-center">
       {/* Decorative ring */}
-      <div className={styles.qrRing}>
-        <div className={styles.qrCanvas} ref={qrRef}>
+      <div className="relative p-3 bg-gradient-to-br from-blue-50 to-emerald-50 rounded-3xl shadow-inner border border-blue-100/50">
+        <div className="p-4 bg-white rounded-2xl shadow-sm border border-slate-100" ref={qrRef}>
           <QRCodeCanvas
             value={qrValue}
             size={220}
             level="H"
             bgColor="#ffffff"
-            fgColor="#1e1b4b"
+            fgColor="#1e293b"
             includeMargin={true}
             imageSettings={{
               src: '',
@@ -112,27 +110,25 @@ export default function QRCodeGenerator({ bookingData }) {
       </div>
 
       {/* Scan hint */}
-      <p className={styles.scanHint}>
-        <span className={styles.scanIcon}>📱</span>
+      <p className="flex items-center gap-2 mt-6 mb-8 text-sm font-semibold text-slate-500 tracking-wide">
+        <Smartphone size={16} className="text-blue-500 animate-pulse" />
         Scan to view parking details
       </p>
 
       {/* Action buttons */}
-      <div className={styles.qrActions}>
-        <button className={styles.btnDownload} onClick={handleDownload}>
-          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          Download QR
+      <div className="flex w-full gap-3">
+        <button 
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-slate-300 text-slate-700 rounded-xl font-semibold hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition-all active:scale-95 shadow-sm" 
+          onClick={handleDownload}
+        >
+          <Download size={16} strokeWidth={2.5} />
+          Download
         </button>
-        <button className={styles.btnPrint} onClick={handlePrint}>
-          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-            <polyline points="6 9 6 2 18 2 18 9" />
-            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-            <rect x="6" y="14" width="12" height="8" />
-          </svg>
+        <button 
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-slate-300 text-slate-700 rounded-xl font-semibold hover:bg-slate-50 hover:text-blue-600 hover:border-blue-300 transition-all active:scale-95 shadow-sm" 
+          onClick={handlePrint}
+        >
+          <Printer size={16} strokeWidth={2.5} />
           Print
         </button>
       </div>
